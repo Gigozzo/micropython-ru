@@ -1,43 +1,43 @@
 .. _quickref:
 
-Quick reference for the pyboard
-===============================
+Краткое описание микроконтроллера pyboard
+=========================================
 
 .. image:: http://micropython.org/resources/pybv10-pinout.jpg
     :alt: PYBv1.0 pinout
     :width: 700px
 
-General board control
----------------------
+Основные команды микроконтроллера
+---------------------------------
 
-See :mod:`pyb`. ::
+Подробнее :mod:`pyb`. ::
 
     import pyb
 
-    pyb.delay(50) # wait 50 milliseconds
-    pyb.millis() # number of milliseconds since bootup
+    pyb.delay(50) # ожидание 50 миллисекунд
+    pyb.millis() # количество миллисекунд с момента запуска
     pyb.repl_uart(pyb.UART(1, 9600)) # duplicate REPL on UART(1)
     pyb.wfi() # pause CPU, waiting for interrupt
-    pyb.freq() # get CPU and bus frequencies
-    pyb.freq(60000000) # set CPU freq to 60MHz
-    pyb.stop() # stop CPU, waiting for external interrupt
+    pyb.freq() # получить частоты центрального процессора и магистрали
+    pyb.freq(60000000) # установить частоту центрального процессора 60MHz
+    pyb.stop() # остановка центрального процессора, ожидание внешнего прерывания
 
-LEDs
-----
+Светодиоды (LEDs)
+-----------------
 
-See :ref:`pyb.LED <pyb.LED>`. ::
+Подробнее :ref:`pyb.LED <pyb.LED>`. ::
 
     from pyb import LED
 
-    led = LED(1) # red led
+    led = LED(1) # красный светодиод
     led.toggle()
     led.on()
     led.off()
 
-Pins and GPIO
+Пины и интерфейсы ввода/вывода (GPIO)
 -------------
 
-See :ref:`pyb.Pin <pyb.Pin>`. ::
+Подробнее :ref:`pyb.Pin <pyb.Pin>`. ::
 
     from pyb import Pin
 
@@ -46,95 +46,95 @@ See :ref:`pyb.Pin <pyb.Pin>`. ::
     p_out.low()
 
     p_in = Pin('X2', Pin.IN, Pin.PULL_UP)
-    p_in.value() # get value, 0 or 1
+    p_in.value() # получить значение, 0 или 1
 
-External interrupts
--------------------
+Внешние прерывания
+------------------
 
-See :ref:`pyb.ExtInt <pyb.ExtInt>`. ::
+Подробнее :ref:`pyb.ExtInt <pyb.ExtInt>`. ::
 
     from pyb import Pin, ExtInt
 
     callback = lambda e: print("intr")
     ext = ExtInt(Pin('Y1'), ExtInt.IRQ_RISING, Pin.PULL_NONE, callback)
 
-Timers
-------
+Хронометры
+----------
 
-See :ref:`pyb.Timer <pyb.Timer>`. ::
+Подробнее :ref:`pyb.Timer <pyb.Timer>`. ::
 
     from pyb import Timer
 
     tim = Timer(1, freq=1000)
-    tim.counter() # get counter value
+    tim.counter() # получить значение счётчика
     tim.freq(0.5) # 0.5 Hz
     tim.callback(lambda t: pyb.LED(1).toggle())
 
-PWM (pulse width modulation)
-----------------------------
+Широтно-импульсная модуляция (PWM)
+----------------------------------
 
-See :ref:`pyb.Pin <pyb.Pin>` and :ref:`pyb.Timer <pyb.Timer>`. ::
+Подробнее :ref:`pyb.Pin <pyb.Pin>` и :ref:`pyb.Timer <pyb.Timer>`. ::
 
     from pyb import Pin, Timer
 
-    p = Pin('X1') # X1 has TIM2, CH1
+    p = Pin('X1') # X1 это TIM2, CH1
     tim = Timer(2, freq=1000)
     ch = tim.channel(1, Timer.PWM, pin=p)
     ch.pulse_width_percent(50)
 
-ADC (analog to digital conversion)
+Конвертация аналогового в цифровой (ADC)
 ----------------------------------
 
-See :ref:`pyb.Pin <pyb.Pin>` and :ref:`pyb.ADC <pyb.ADC>`. ::
+Подробнее :ref:`pyb.Pin <pyb.Pin>` и :ref:`pyb.ADC <pyb.ADC>`. ::
 
     from pyb import Pin, ADC
 
     adc = ADC(Pin('X19'))
-    adc.read() # read value, 0-4095
+    adc.read() # прочитать значение, 0-4095
 
-DAC (digital to analog conversion)
+Конвертация цифрового в аналоговый (DAC)
 ----------------------------------
 
-See :ref:`pyb.Pin <pyb.Pin>` and :ref:`pyb.DAC <pyb.DAC>`. ::
+Подробнее :ref:`pyb.Pin <pyb.Pin>` и :ref:`pyb.DAC <pyb.DAC>`. ::
 
     from pyb import Pin, DAC
 
     dac = DAC(Pin('X5'))
-    dac.write(120) # output between 0 and 255
+    dac.write(120) # вывод от 0 до 255
 
-UART (serial bus)
------------------
+Универсальный асинхронный приёмопередатчик (UART)
+-------------------------------------------------
 
-See :ref:`pyb.UART <pyb.UART>`. ::
+Подробнее :ref:`pyb.UART <pyb.UART>`. ::
 
     from pyb import UART
 
     uart = UART(1, 9600)
     uart.write('hello')
-    uart.read(5) # read up to 5 bytes
+    uart.read(5) # читать 5 байт
 
-SPI bus
+Интерфейс системного программированния (SPI)
 -------
 
-See :ref:`pyb.SPI <pyb.SPI>`. ::
+Подробнее :ref:`pyb.SPI <pyb.SPI>`. ::
 
     from pyb import SPI
 
     spi = SPI(1, SPI.MASTER, baudrate=200000, polarity=1, phase=0)
     spi.send('hello')
-    spi.recv(5) # receive 5 bytes on the bus
+    spi.recv(5) # получить 5 байт из шины
     spi.send_recv('hello') # send a receive 5 bytes
 
-I2C bus
+Интерфейсная шина IIC (I2C)
 -------
 
-See :ref:`pyb.I2C <pyb.I2C>`. ::
+Подробнее :ref:`pyb.I2C <pyb.I2C>`. ::
 
     from pyb import I2C
 
     i2c = I2C(1, I2C.MASTER, baudrate=100000)
-    i2c.scan() # returns list of slave addresses
-    i2c.send('hello', 0x42) # send 5 bytes to slave with address 0x42
-    i2c.recv(5, 0x42) # receive 5 bytes from slave
-    i2c.mem_read(2, 0x42, 0x10) # read 2 bytes from slave 0x42, slave memory 0x10
-    i2c.mem_write('xy', 0x42, 0x10) # write 2 bytes to slave 0x42, slave memory 0x10
+    i2c.scan() # возвращает список ведомых адресов
+    i2c.send('hello', 0x42) # отправить 5 байт для ведомого устройства с адресом 0x42
+    i2c.recv(5, 0x42) # получить 5 байт от ведомого устройства
+    i2c.mem_read(2, 0x42, 0x10) # прочитать 2 байта от ведомого устройства 0x42, ведомого устройства памяти 0x10
+    i2c.mem_write('xy', 0x42, 0x10) # написать 2 байта ведомому устройству 0x42, 0x10 ведомого устройства памяти
