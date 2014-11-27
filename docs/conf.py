@@ -52,7 +52,6 @@ master_doc = 'index'
 # General information about the project.
 project = 'Micro Python'
 copyright = '2014, Damien P. George'
-translation = 'Григорий А. Волков'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
