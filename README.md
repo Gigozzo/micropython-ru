@@ -2,6 +2,8 @@
 [travis-img]:  https://travis-ci.org/micropython/micropython.png?branch=master
 [travis-repo]: https://travis-ci.org/micropython/micropython
 
+Документация на русском: http://micropython-ru.readthedocs.org/en/latest/index.html
+
 The Micro Python project
 ========================
 <p align="center">
