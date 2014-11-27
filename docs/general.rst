@@ -4,56 +4,42 @@ General information about the pyboard
 Local filesystem and SD card
 ----------------------------
 
-There is a small internal filesystem (a drive) on the pyboard, called ``/flash``,
-which is stored within the microcontroller's flash memory.  If a micro SD card
-is inserted into the slot, it is available as ``/sd``.
+У pyboard есть небольшая внутренняя файловая система: ``/flash``; она находится во флеш-памяти микроконтроллера. Если карта памяти micro SD вставлена в гнездо, то её файловая система находится в ``/sd``.
 
-When the pyboard boots up, it needs to choose a filesystem to boot from.  If
-there is no SD card, then it uses the internal filesystem ``/flash`` as the boot
-filesystem, otherwise, it uses the SD card ``/sd``.
+Перед запуском pyboard, необходимо выбрать загрузочную файловую систему. Если карта памяти micro SD вставлена в гнездо, то загрузка будет происходить из ``/sd``. Когда карты памяти нет - загрузка происходит из внутренней памяти ``/flash``.
 
-(Note that on older versions of the board, ``/flash`` is called ``0:/`` and ``/sd``
-is called ``1:/``).
+(Стоит отметить, что в старых версиях микроконтроллера, ``/flash`` называется ``0:/``, а ``/sd`` - ``1:/``).
 
 The boot filesystem is used for 2 things: it is the filesystem from which
 the ``boot.py`` and ``main.py`` files are searched for, and it is the filesystem
 which is made available on your PC over the USB cable.
 
-The filesystem will be available as a USB flash drive on your PC.  You can
-save files to the drive, and edit ``boot.py`` and ``main.py``.
+При подключении микроконтроллера к компьютеру, последний его распознает как USB накопитель. В результате вы можете свободно работать с файлами ``boot.py`` и ``main.py``.
 
-*Remember to eject (on Linux, unmount) the USB drive before you reset your
-pyboard.*
+*Не забывайте извлекать (размонтировать на Linux) USB накопитель перед перезагрузкой микроконтроллера.*
 
-Boot modes
-----------
+Режимы загрузки
+---------------
 
-If you power up normally, or press the reset button, the pyboard will boot
-into standard mode: the ``boot.py`` file will be executed first, then the
-USB will be configured, then ``main.py`` will run.
+Если включение произошло в штатном режиме или была нажата кнопка перезагрузки микроконтроллера, то pyboard запустится в стандартном режиме: первым выполнится файл ``boot.py``, затем сконфигурируется USB и запустится ``main.py``
 
-You can override this boot sequence by holding down the user switch as
-the board is booting up.  Hold down user switch and press reset, and then
-as you continue to hold the user switch, the LEDs will count in binary.
-When the LEDs have reached the mode you want, let go of the user switch,
-the LEDs for the selected mode will flash quickly, and the board will boot.
+Вы можете изменить последовательность загрузки, удерживая переключатель пользователя когда микроконтроллер будет запускаться.
+Удерживайте переключатель и нажимите reset, продолжайте удерживать переключатель - светодиоды начнут считать в двоичной системе.
+Когда светодиоды достигнут значения нужного вам режима - отпустите переключатель. Светодиоды выбранного режима будут быстро мигать и микроконтроллер будет быстро загружаться.
 
-The modes are:
+Режимы:
 
-1. Green LED only, *standard boot*: run ``boot.py`` then ``main.py``.
-2. Orange LED only, *safe boot*: don't run any scripts on boot-up.
-3. Green and orange LED together, *filesystem reset*: resets the flash
-   filesystem to its factory state, then boots in safe mode.
+1. Только зелёный светодиод, *стандартная загрузка*: запустить ``boot.py`` и затем ``main.py``.
+2. Только оранжевый светодиод, *безопасная загрузка*: не запускать никаких скриптов при загрузке.
+3. Зелёный и оранжевый светодиоды одновременно, *сброс файловой системы*: сбросить внутреннюю файловую систему до заводских параметров и затем загрузиться в безопасном режиме.
 
-If your filesystem becomes corrupt, boot into mode 3 to fix it.
+Если ваша файловая система испортилась - загрузитесь в 3-м режиме чтобы исправить ошибки.
 
-Errors: flashing LEDs
----------------------
+Ошибки: мигание светодиодов
+---------------------------
 
-There are currently 2 kinds of errors that you might see:
+в настоящий момент есть только два типа ошибок, которые вы можете увидеть:
 
-1. If the red and green LEDs flash alternatively, then a Python script
-    (eg ``main.py``) has an error.  Use the REPL to debug it.
-2. If all 4 LEDs cycle on and off slowly, then there was a hard fault.
-   This cannot be recovered from and you need to do a hard reset.
-
+1. Зелёный и красный светодиоды поочерёдно горят: ваш код содержит ошибки (например в ``main.py``)
+2. Все четыре светодиода медленно мигают: произошла критическая ошибка.
+	Не подлежит исправлению, требуется сделать аппаратный сброс.
