@@ -1,12 +1,11 @@
 .. _tutorial-index:
 
-Micro Python tutorial
-=====================
+Руководство Micro Python
+========================
 
-This tutorial is intended to get you started with your pyboard.
-All you need is a pyboard and a micro-USB cable to connect it to
-your PC.  If it is your first time, it is recommended to follow
-the tutorial through in the order below.
+Это руководство предназначено для того, чтобы вы начали работать с вашим микроконтроллером.
+Всё что вам нужно это микроконтроллер и микро-USB кабель чтобы соединить его с вашим компьютером.
+Для начала рекомендуется следовать инструкции, изложенной ниже.
 
 .. toctree::
    :maxdepth: 1
@@ -24,8 +23,8 @@ the tutorial through in the order below.
    assembler.rst
    power_ctrl.rst
 
-Tutorials requiring extra components
-------------------------------------
+Руководства требующие дополнительных компонент
+----------------------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -36,8 +35,8 @@ Tutorials requiring extra components
    lcd_skin.rst
    amp_skin.rst
 
-Tips, tricks and useful things to know
---------------------------------------
+Советы, фишки и полезные штуки, которые стоит знать
+---------------------------------------------------
 
 .. toctree::
    :maxdepth: 1
