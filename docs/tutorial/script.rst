@@ -1,105 +1,92 @@
-Running your first script
-=========================
+Запуск первого скрипта
+======================
+
+Давайте прыгать прямо в и получить сценарий Python работает на pyboard. после
+все, вот что это все о!
 
 Let's jump right in and get a Python script running on the pyboard.  After
 all, that's what it's all about!
 
-Connecting your pyboard
------------------------
+Подключение pyboard
+-------------------
 
-Connect your pyboard to your PC (Windows, Mac or Linux) with a micro USB cable.
-There is only one way that the cable will connect, so you can't get it wrong.
+Подключите pyboard к компьютеру (Windows, Mac или Linux) с помощью микро-USB.
+Существует только один способ, которым можно вставить кабель в гнездо, так что вы не ошибётесь.
 
 .. image:: img/pyboard_usb_micro.jpg
 
-When the pyboard is connected to your PC it will power on and enter the start up
-process (the boot process).  The green LED should light up for half a second or
-less, and when it turns off it means the boot process has completed.
+Когда pyboard подключен к компьютеру, он включается и начинает процесс запуска (the boot process).
+Зеленый светодиод должен загореться на пол секунды или меньше, и, когда он отключается - процесс загрузки завершен.
 
-Opening the pyboard USB drive
------------------------------
+Открытие pyboard как USB накопителя
+-----------------------------------
 
-Your PC should now recognise the pyboard.  It depends on the type of PC you
-have as to what happens next:
+Теперь Ваш компьютер должен распознать pyboard. От типа вашего компьютера зависит то, что произойдет далее:
 
-  - **Windows**: Your pyboard will appear as a removable USB flash drive.
-    Windows may automatically pop-up a window, or you may need to go there
-    using Explorer.
+  - **Windows**: Ваш pyboard будет отображаться как съемный USB накопитель.
+    Появится всплыващее окно или вам понадобится открыть Проводник.
 
-    Windows will also see that the pyboard has a serial device, and it will
-    try to automatically configure this device.  If it does, cancel the process.
-    We will get the serial device working in the next tutorial.
+    Windows может распознать pyboard как последовательное устройство и попытаться автоматически настроить это устройство.
+    Если это произойдёт, то процесс следует отменить. Мы узнаем как работает последовательное устройство в следующем уроке.
 
-  - **Mac**: Your pyboard will appear on the desktop as a removable disc.
-    It will probably be called "NONAME".  Click on it to open the pyboard folder.
+  - **Mac**: Ваш pyboard появится на рабочем столе в качестве съемного диска.
+    И, вероятно, будет называться "NONAME". Нажмите на него, чтобы открыть папку pyboard.
 
-  - **Linux**: Your pyboard will appear as a removable medium.  On Ubuntu
-    it will mount automatically and pop-up a window with the pyboard folder.
-    On other Linux distributions, the pyboard may be mounted automatically,
-    or you may need to do it manually.  At a terminal command line, type ``lsblk``
-    to see a list of connected drives, and then ``mount /dev/sdb1`` (replace ``sdb1``
-    with the appropriate device).  You may need to be root to do this.
+  - **Linux**: Ваш pyboard будет отображаться как съемный носитель. В Ubuntu
+    он подключится автоматически. В других дистрибутивах Linux pyboard может установится автоматически,
+    либо вам потребуется сделать это вручную.
+    В командной строке терминала введите ``lsblk``, чтобы увидеть список подключенных дисков, а затем ``mount/dev/sdb1`` (замените ``sdb1`` на соответствующее устройство).
+    Вы, возможно, должны сделать это с правами суперпользователя (root).
 
-Okay, so you should now have the pyboard connected as a USB flash drive, and
-a window (or command line) should be showing the files on the pyboard drive.
+Итак, теперь у вас есть pyboard, подключённый как USB накопитель и окно (или командную строку) со списком файлов на диске микроконтроллера.
 
-The drive you are looking at is known as ``/flash`` by the pyboard, and should contain
-the following 4 files:
+Диск, который вы видете, у pyboard называется ``/flash`` и должен содержать следующие 4 файла:
 
-* `boot.py <http://micropython.org/resources/fresh-pyboard/boot.py>`_ -- this script is executed when the pyboard boots up.  It sets
-    up various configuration options for the pyboard.
+* `boot.py <http://micropython.org/resources/fresh-pyboard/boot.py>`_ -- этот скрипт выполняется, когда pyboard загружается. Он устанавливает различные варианты конфигурации для pyboard.
 
-* `main.py <http://micropython.org/resources/fresh-pyboard/main.py>`_ -- this is the main script that will contain your Python program.
-    It is executed after ``boot.py``.
+* `main.py <http://micropython.org/resources/fresh-pyboard/main.py>`_ -- это основной скрипт, в котором будет находиться ваша программа. Он выполняется после ``boot.py``.
 
-* `README.txt <http://micropython.org/resources/fresh-pyboard/README.txt>`_ -- this contains some very basic information about getting
-    started with the pyboard.
+* `README.txt <http://micropython.org/resources/fresh-pyboard/README.txt>`_ -- содержит некоторую основную информацию.
 
-* `pybcdc.inf <http://micropython.org/resources/fresh-pyboard/pybcdc.inf>`_ -- this is a Windows driver file to configure the serial USB
-    device.  More about this in the next tutorial.
+* `pybcdc.inf <http://micropython.org/resources/fresh-pyboard/pybcdc.inf>`_ -- файл драйвера для Windows, чтобы настроить последовательное USB устройство. Подробнее об этом в следующем уроке.
 
-Editing ``main.py``
--------------------
+Резактирование ``main.py``
+--------------------------
 
-Now we are going to write our Python program, so open the ``main.py``
-file in a text editor.  On Windows you can use notepad, or any other editor.
-On Mac and Linux, use your favourite text editor.  With the file open you will
-see it contains 1 line::
+Теперь мы собираемся написать нашу программу на Python, так что открываем ``main.py`` в текстовом редакторе. В Windows вы можете использовать блокнот или любой другой редактор.
+На Mac и Linux, используйте ваш любимый текстовый редактор. Когда откроете файл - увидите, что содержит одну строку::
 
     # main.py -- put your code here!
 
-This line starts with a # character, which means that it is a *comment*.  Such
-lines will not do anything, and are there for you to write notes about your
-program.
+Эта строка начинается с символа #, который означает, что это * комментарий *.
+Такие строки не будут ничего делать, они нужны, чтобы написать заметки в вашей программе.
 
-Let's add 2 lines to this ``main.py`` file, to make it look like this::
+Давайте добавим две строки::
 
     # main.py -- put your code here!
     import pyb
     pyb.LED(4).on()
 
-The first line we wrote says that we want to use the ``pyb`` module.
-This module contains all the functions and classes to control the features
-of the pyboard.
+Первая строка, которую мы написали, говорит, что мы хотим использовать ``pyb`` модуль.
+Этот модуль содержит все функции и классы для управления pyboard.
 
-The second line that we wrote turns the blue LED on: it first gets the ``LED``
-class from the ``pyb`` module, creates LED number 4 (the blue LED), and then
-turns it on.
+Вторая строка включает синий индикатор: сначала получаем ``LED`` класс из модуля ``pyb``, задаём светодиодный номер 4 (синий светодиод), а затем включаем его.
 
-Resetting the pyboard
----------------------
+Сброс pyboard
+-------------
 
-To run this little script, you need to first save and close the ``main.py`` file,
-and then eject (or unmount) the pyboard USB drive.  Do this like you would a
-normal USB flash drive.
+Для запуска этого небольшого скрипта, вы должны сначала сохранить и закрыть ``main.py``, а затем извлечь (или отключить/размонтировать) pyboard USB диск.
+Сделайте это, так как бы вы извлекали обычный USB флэш-диск.
+
+Когда диск безопасно отключился - вы можете добраться до забавной части:
+нажмите переключатель RST на pyboard для сброса и запуска вашего скрипта.
+Переключатель RST это маленькая чёрная кнопка, чуть ниже разъема USB на плате по правому краю.
 
 When the drive is safely ejected/unmounted you can get to the fun part:
 press the RST switch on the pyboard to reset and run your script. The RST
 switch is the small black button just below the USB connector on the board,
 on the right edge.
 
-When you press RST the green LED will flash quickly, and then the blue
-LED should turn on and stay on.
+После того как вы нажмёте RST - зеленый светодиод будет быстро мигать, а затем синий светодиод должен загореться и остаться.
 
-Congratulations!  You have written and run your very first Micro Python
-program!
+Поздравляем! Вы написали и запустили свою первую программу на Micro Python!
