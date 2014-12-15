@@ -1,81 +1,70 @@
-Getting a Micro Python REPL prompt
-==================================
+Простая интерактивная среда программирования REPL
+=================================================
 
-REPL stands for Read Evaluate Print Loop, and is the name given to the
-interactive Micro Python prompt that you can access on the pyboard.  Using
-the REPL is by far the easiest way to test out your code and run commands.
-You can use the REPL in addition to writing scripts in ``main.py``.
+REPL - Read(Чтение) Evaluate(Оценка) Print(Печать) Loop(Цикл) - интерактивная строка Micro Python, с помощью которой вы можете получить доступ к pyboard.
+Использование REPL является самым простым способом проверки своего кода и выполнения команд.
+Вы можете использовать REPL как вспомогательное средство для написания сценариев в ``main.py``.
 
-To use the REPL, you must connect to the serial USB device on the pyboard.
-How you do this depends on your operating system.
+Для использования REPL, необходимо подключиться к последовательному устройству USB на pyboard.
+Как это сделать, зависит от вашей операционной системы.
 
 Windows
 -------
 
-You need to install the pyboard driver to use the serial USB device.
-The driver is on the pyboard's USB flash drive, and is called ``pybcdc.inf``.
+Вы должны установить драйвер pyboard с использованием последовательного USB устройства.
+Драйвер USB флэш-диска pyboard называется ``pybcdc.inf``.
 
-To install this driver you need to go to Device Manager
-for your computer, find the pyboard in the list of devices (it should have
-a warning sign next to it because it's not working yet), right click on
-the pyboard device, select Properties, then Install Driver.  You need to
-then select the option to find the driver manually (don't use Windows auto update),
-navigate to the pyboard's USB drive, and select that.  It should then install.
-After installing, go back to the Device Manager to find the installed pyboard,
-and see which COM port it is (eg COM4).
+Для установки этого драйвера вам необходимо перейти в Диспетчер Устройств для вашего компьютера,
+найти pyboard в списке устройств (он должн иметь предупреждающий знак, потому что он еще не работает), щелкните правой кнопкой мыши на pyboard устройство,
+выберите Свойства и установите драйвер. Затем необходимо выбрать опцию, чтобы найти драйвер потоков вручную (не используйте автоматическое обновление Windows),
+перейдите к USB флеш-диску pyboard, и выберите его. Он должен установиться.
+После установки, вернитесь в Диспетчер Устройств, чтобы найти установленный pyboard, и посмотрите, какой это COM порт (например, COM4).
 
-You now need to run your terminal program.  You can use HyperTerminal if you
-have it installed, or download the free program PuTTY:
+Теперь вам нужно запустить свою терминальную программу. Вы можете использовать HyperTerminal, если он у вас установлен, или скачать бесплатную программу PuTTY:
 `putty.exe <http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html>`_.
-Using your serial program you must connect to the COM port that you found in the
-previous step.  With PuTTY, click on "Session" in the left-hand panel, then click
-the "Serial" radio button on the right, then enter you COM port (eg COM4) in the
-"Serial Line" box.  Finally, click the "Open" button.
+Используя программу удалённого доступа (возможно терминальную), вы должны подключиться к тому COM порту, который нашли в предыдущем шаге.
+Для PuTTY: нажмите "Session" на левой панели и нажмите радио-кнопку "Serial" справа, затем в поле "Serial Line" введите найденный COM порт (например, COM4), нажмите кнопку "Open".
 
 Mac OS X
 --------
 
-Open a terminal and run::
+Откройте терминал и запустите::
 
     screen /dev/tty.usbmodem*
     
-When you are finished and want to exit screen, type CTRL-A CTRL-\\.
+Когда вы закончите и захотите выйти, нажмите CTRL-A CTRL-\\.
 
 Linux
 -----
 
-Open a terminal and run::
+Откройте терминал и запустите::
 
     screen /dev/ttyACM0
     
-You can also try ``picocom`` or ``minicom`` instead of screen.  You may have to
-use ``/dev/ttyACM1`` or a higher number for ``ttyACM``.  And, you may need to give
-yourself the correct permissions to access this devices (eg group ``uucp`` or ``dialout``,
-or use sudo).
+Вы можете попробовать вместо этого ``picocom`` или ``ttyACM``. Возможно вам придётся использовать ``/dev/ttyACM1`` или с большим номером ``ttyACM``.
+Также вам могут понадобиться права для доступа к этому устройству (например, группа ``uucp`` или ``dialog`` или использовать sudo).
 
-Using the REPL prompt
----------------------
+Использование REPL
+------------------
 
-Now let's try running some Micro Python code directly on the pyboard.
+Теперь давайте попробуем запустить код Micro Pythom непосредственно на pyboard.
 
-With your serial program open (PuTTY, screen, picocom, etc) you may see a blank
-screen with a flashing cursor.  Press Enter and you should be presented with a
-Micro Python prompt, i.e. ``>>>``.  Let's make sure it is working with the obligatory test::
+В вашей программе удалённого доступа (PuTTY, screen, picocom, и т.д.) вы увидите пустой экран с мигающим курсором.
+Чтобы попасть в простой интерпретатор Micro Python - нажмите Enter. Вы увидите строку, начинающуюся с ``>>>``.
+Давайте удостоверимся, что он работает::
 
     >>> print("hello pyboard!")
     hello pyboard!
 
-In the above, you should not type in the ``>>>`` characters.  They are there to
-indicate that you should type the text after it at the prompt.  In the end, once
-you have entered the text ``print("hello pyboard!")`` and pressed Enter, the output
-on your screen should look like it does above.
+Символы ``>>>`` указывают, что далее вы должны ввести текст в командной строке.
+После ввода ``print("hello pyboard!")`` и нажатия Enter - в выводе мы увидили ``hello, pyboard!``
 
-If you already know some python you can now try some basic commands here. 
+Если вы уже знакомы с python - попробуйте выполнить основные команды.
 
-If any of this is not working you can try either a hard reset or a soft reset;
-see below.
+Если какая-либо из них не сработает - попробуйте hard reset or a soft reset;
+смотри ниже.
 
-Go ahead and try typing in some other commands.  For example::
+Пойдём дальше и попробуем ввести некоторые другие команды. Например::
 
     >>> pyb.LED(1).on()
     >>> pyb.LED(2).on()
@@ -86,11 +75,11 @@ Go ahead and try typing in some other commands.  For example::
     >>> 20 * 'py'
     'pypypypypypypypypypypypypypypypypypypypy'
 
-Resetting the board
--------------------
+Сброс микроконтроллера
+----------------------
 
-If something goes wrong, you can reset the board in two ways. The first is to press CTRL-D
-at the Micro Python prompt, which performs a soft reset.  You will see a message something like ::
+Если что-то пойдёт не так - вы можете сбросить микроконтроллер двумя способами.
+Первый - нажать CTRL-D в командной строке Micro Python, произойдёт мягкая перезагрузка (soft reset). Вы увидите сообщение наподобие следующего::
 
     >>> 
     PYB: sync filesystems
@@ -99,9 +88,7 @@ at the Micro Python prompt, which performs a soft reset.  You will see a message
     Type "help()" for more information.
     >>>
 
-If that isn't working you can perform a hard reset (turn-it-off-and-on-again) by pressing the RST
-switch (the small black button closest to the micro-USB socket on the board). This will end your
-session, disconnecting whatever program (PuTTY, screen, etc) that you used to connect to the pyboard.
+Если же это не сработает - вы можете выполнить аппаратный сброс (hard reset) (turn-it-off-and-on-again). Для этого нажмите RST на микроконтроллере (маленькая черная кнопка ближе к разъему micro-USB на плате).
+Это остановит сеанс, отсоединится от любой программы (PuTTY, screen, и т.д.), которая используется для подключения к pyboard.
 
-If you are going to do a hard-reset, it's recommended to first close your serial program and eject/unmount
-the pyboard drive.
+Перед аппаратным сбросом рекомендуется предварительно отключить программу удалённого доступа и извлечь/размонтировать pyboard.
