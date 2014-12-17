@@ -1,40 +1,45 @@
-Turning on LEDs and basic Python concepts
-=========================================
+Включение светодиодов и основные понятия Python
+===============================================
 
-The easiest thing to do on the pyboard is to turn on the LEDs attached to the board. Connect the board, and log in as described in tutorial 1. We will start by turning and LED on in the interpreter, type the following ::
+На pyboard проще всего сделать включение светодиодов, подключённых к плате. Соедините плату с компьютером и войдите как описано в руководстве 1. Начнём с переключения светодиода. Введите в интерпретаторе::
 
     >>> myled = pyb.LED(1)
     >>> myled.on()
     >>> myled.off()
 
-These commands turn the LED on and off.
+Эти команды включат и выключат светодиод.
 
-This is all very well but we would like this process to be automated. Open the file MAIN.PY on the pyboard in your favourite text editor. Write or paste the following lines into the file. If you are new to python, then make sure you get the indentation correct since this matters! ::
+Это все очень хорошо, но мы бы хотели автоматизировать этот процесс. Откройте файл MAIN.PY на pyboard в вашем любимом текстовом редакторе. Напишите или вставьте следующие строки в файл. Если вы новичок в Python, то убедитесь, что вы сделали корректный отступ, это имеет значение! ::
 
     led = pyb.LED(2)
     while True:
         led.toggle()
         pyb.delay(1000)
 
-When you save, the red light on the pyboard should turn on for about a second. To run the script, do a soft reset (CTRL-D). The pyboard will then restart and you should see a green light continuously flashing on and off. Success, the first step on your path to building an army of evil robots! When you are bored of the annoying flashing light then press CTRL-C at your terminal to stop it running.
- 
-So what does this code do? First we need some terminology. Python is an object-oriented language, almost everything in python is a *class* and when you create an instance of a class you get an *object*. Classes have *methods* associated to them. A method (also called a member function) is used to interact with or control the object.
+Когда вы сохраните изменения, красный светодиод должен на секунду загореться. Чтобы запустить скрипт, сделать мягкую перезагрузку (CTRL-D). Pyboard перезапустится, и вы увидите как зеленый светодиод непрерывно мигает: включается и выключается. Успех! Первый шаг на пути к созданию армии злых роботов! Когда вам наскучит назойливый мигающий зелёный светодиод - нажмите CTRL-C в вашем терминале чтобы остановить его работу.
 
-The first line of code creates an LED object which we have then called led. When we create the object, it takes a single parameter which must be between 1 and 4, corresponding to the 4 LEDs on the board. The pyb.LED class has three important member functions that we will use: on(), off() and toggle(). The other function that we use is pyb.delay() this simply waits for a given time in miliseconds. Once we have created the LED object, the statement while True: creates an infinite loop which toggles the led between on and off and waits for 1 second.
+Итак, что же делает этот код? Для начала нам нужна терминология. Python объектно-ориентированный язык, почти всё в Python есть *class* и когда вы создаёте экземпляр класса - вы получаете *object*.
+У классов есть *methods*, связанные с ними. Метод используется для взаимодействия с объектами.
 
-**Exercise: Try changing the time between toggling the led and turning on a different LED.**
+В первой строке кода создаётся LED объект, который мы называли led. При создании, этот объект принемает один параметр - число в диапазоне от 1 до 4, соответствующее четырём светодиодам на плате.
+Класс pyb.LED имеет три важных метода: on(), off() и toggle().
+Другой метод, который мы используем: pyb.delay() - он просто ожидает в течение заданного в миллисекундах времени.
+Создаётся LED объект и затем, в бесконечном цикле (while True), происходит переключение (toggle()) светодиода (то есть on, off) и ожидание в 1 секунду.
 
-**Exercise: Connect to the pyboard directly, create a pyb.LED object and turn it on using the on() method.**
+**Упражнение: попробуйте изменить время между переключением светодиода и изменить сам светодиод.**
 
-A Disco on your pyboard
------------------------
+**Упражнение: подключитесь к pyboard, создайте объект pyb.LED и включите его, используя метод on().**
 
-So far we have only used a single LED but the pyboard has 4 available. Let's start by creating an object for each LED so we can control each of them. We do that by creating a list of LEDS with a list comprehension. ::
+Дискотека на вашем pyboard
+--------------------------
+
+До сих пор мы использовали только один светодиод, но на pyboard их четыре. Давайте создадим объекты для каждого светодиода чтобы контролировать их.
+Сделаем это, создав список (массив) объектов pyb.LED::
 
     leds = [pyb.LED(i) for i in range(1,5)]
 
-If you call pyb.LED() with a number that isn't 1,2,3,4 you will get an error message.
-Next we will set up an infinite loop that cycles through each of the LEDs turning them on and off. ::
+Если вы попробуете вызвать pyb.LED() с числом за пределами данного (1..4) диапазона - поглучите сообщение об ошибке.
+Далее давайте создадим бесконечный цикл, который будет включать и выключать все светодиоды::
 
     n = 0
     while True:
@@ -42,9 +47,17 @@ Next we will set up an infinite loop that cycles through each of the LEDs turnin
       leds[n].toggle()
       pyb.delay(50)
 
-Here, n keeps track of the current LED and every time the loop is executed we cycle to the next n (the % sign is a modulus operator that keeps n between 0 and 4.) Then we access the nth LED and toggle it. If you run this you should see each of the LEDs turning on then all turning off again in sequence.
+Здесь n содержит текущий светодиод и каждую следующую итерацию цикла переходим к следующему n (символ % является бинарной операцией: получение модуля числа; то есть n находится в диапазоне от 0 до 3 включительно).
+Получаем доступ к n-ому светодиоду и переключаем его. Когда вы запустите этот скрипт - увидите как поочерёдно включаются и выключаются светодиоды.
 
-One problem you might find is that if you stop the script and then start it again that the LEDs are stuck on from the previous run, ruining our carefully choreographed disco. We can fix this by turning all the LEDs off when we initialise the script and then using a try/finally block. When you press CTRL-C, Micro Python generates a VCPInterrupt exception. Exceptions normally mean something has gone wrong and you can use a try: command to "catch" an exception. In this case it is just the user interrupting the script, so we don't need to catch the error but just tell Micro Python what to do when we exit. The finally block does this, and we use it to make sure all the LEDs are off. The full code is::
+Вы можете заметить одну проблему: если остановить скрипт и запустить снова - светодиоды застрянут на предыдущей сессии, разрушая нашу дискотеку.
+Мы можем исправить это, выключив все светодиоды при инициализации с помощью блока try/finally.
+
+One problem you might find is that if you stop the script and then start it again that the LEDs are stuck on from the previous run, ruining our carefully choreographed disco.
+We can fix this by turning all the LEDs off when we initialise the script and then using a try/finally block.
+При нажатии CTRL-C, Micro Python генерирует VCPInterrupt исключение. Исключение обычно означают что что-то пошло не так и вы можете использовать try: команду, которая "ловит" исключения.
+В данном случае это всего лишь пользовательское прерывание скрипта. Нам не нужно ловить ошибку - просто скажем Micro Python что он должен делать когда мы останавливаем скрипт.
+Используем это чтобы убедиться что все светодиоды выключены. Код::
 
     leds = [pyb.LED(i) for i in range(1,5)]
     for l in leds: 
@@ -60,10 +73,11 @@ One problem you might find is that if you stop the script and then start it agai
         for l in leds:
             l.off()
 
-The Fourth Special LED
-----------------------
+Четвёртый специальный светодиод
+-------------------------------
 
-The blue LED is special. As well as turning it on and off, you can control the intensity using the intensity() method. This takes a number between 0 and 255 that determines how bright it is. The following script makes the blue LED gradually brighter then turns it off again. ::
+Синий светодиод особенный - вы можете контролировать интенсивность его свечения. Это делается с помощью специального метода intensity().
+Интенсивность это число от 0 до 255, которое определяет на сколько ярко светится синий светодиод. Следующий код постепенно повышает яркость и затем выключает этот светодиод::
 
     led = pyb.LED(4)
     intensity = 0
@@ -72,4 +86,4 @@ The blue LED is special. As well as turning it on and off, you can control the i
         led.intensity(intensity)
         pyb.delay(20)
 
-You can call intensity() on the other LEDs but they can only be off or on. 0 sets them off and any other number up to 255 turns them on.
+Вы можете вызвать intensity() и для других светодиодов, но они могут быть только включены или выключены. 0 их выключает, а любое другое число до 255 - включает.
