@@ -1,101 +1,75 @@
-The Switch, callbacks and interrupts
-====================================
+Переключатель, обратные вызовы и прерывания
+===========================================
 
-The pyboard has 2 small switches, labelled USR and RST.  The RST switch
-is a hard-reset switch, and if you press it then it restarts the pyboard
-from scratch, equivalent to turning the power off then back on.
+На pyboard есть две небольшие кнопки, называющиеся USR и RST.
 
-The USR switch is for general use, and is controlled via a Switch object.
-To make a switch object do::
+RST переключатель делает аппаратную перезагрузку (hard-reset) и, если вы на него - pyboard перезагрузится; аналогично выключению и включению микроконтроллера.
+
+USR переключатель для общего пользования и управляется с помощью объекта Switch. Создание объекта переключателя::
 
     >>> sw = pyb.Switch()
 
-Remember that you may need to type ``import pyb`` if you get an error that
-the name ``pyb`` does not exist.
+Помните, вам скорее всего потребуется подключить pyb: ``import pyb``, если вы получите ошибку "the name ``pyb`` does not exist".
 
-With the switch object you can get its status::
+С помощью переключателя вы можете получить свой статус::
 
     >>> sw()
     False
 
-This will print ``False`` if the switch is not held, or ``True`` if it is held.
-Try holding the USR switch down while running the above command.
+Будет получено ``False`` если переключатель не нажат, или ``True`` если он нажат.
+Попробуйте удерживать USR пока выполняется вышеуказанная команда.
 
-Switch callbacks
-----------------
+Переключение функции обратного вызова (callback)
+------------------------------------------------
 
-The switch is a very simple object, but it does have one advanced feature:
-the ``sw.callback()`` function.  The callback function sets up something to
-run when the switch is pressed, and uses an interrupt.  It's probably best
-to start with an example before understanding how interrupts work.  Try
-running the following at the prompt::
+Переключатель очень простой объект, но у него одно расширение функционала: функция ``sw.callback()``.
+Функция обратного вызова устанавливает алгоритм действий когда  кнопка нажата и использует прерывания.
+Как работают прерывания, наверное, лучше всего понять на примере. Попробуйте запустить следующий код::
 
     >>> sw.callback(lambda:print('press!'))
 
-This tells the switch to print ``press!`` each time the switch is pressed
-down.  Go ahead and try it: press the USR switch and watch the output on
-your PC.  Note that this print will interrupt anything you are typing, and
-is an example of an interrupt routine running asynchronously.
+Каждый раз при нажатии на USR выводится ``press!``
+Пойдём далее и нажмём USR переключатель - смотрите что выводится на экран. Обратите внимание что этот вывод прерывает всё, что вы вводите: пример асинхронных прерываний.
 
-As another example try::
+В качестве другого примера, попробуйте::
 
     >>> sw.callback(lambda:pyb.LED(1).toggle())
 
-This will toggle the red LED each time the switch is pressed.  And it will
-even work while other code is running.
+Кнопка USR будет включать и выключать красный светодиод. И это будет работать даже вовремя выполнения другого кода.
 
-To disable the switch callback, pass ``None`` to the callback function::
+Чтобы отключить коллбэк - передайте в него ``None``::
 
     >>> sw.callback(None)
 
-You can pass any function (that takes zero arguments) to the switch callback.
-Above we used the ``lambda`` feature of Python to create an anonymous function
-on the fly.  But we could equally do::
+Вы можете передать в коллбэк любую функцию, которая не содержит аргументов.
+Выше мы использовали ``lambda`` - особенная функция для создания анонимных функций налету. Вместо неё мы могли бы сделать::
 
     >>> def f():
     ...   pyb.LED(1).toggle()
     ...
     >>> sw.callback(f)
 
-This creates a function called ``f`` and assigns it to the switch callback.
-You can do things this way when your function is more complicated than a
-``lambda`` will allow.
+Здесь создаётся функция ``f`` и передаётся коллбэку переключателя USR. Такой способ имеет смысл, если ваша функция более сложная, чем позволяет сделать ``lambda``.
 
-Note that your callback functions must not allocate any memory (for example
-they cannot create a tuple or list).  Callback functions should be relatively
-simple.  If you need to make a list, make it beforehand and store it in a
-global variable (or make it local and close over it).  If you need to do
-a long, complicated calculation, then use the callback to set a flag which
-some other code then responds to.
+Обратите внимание, что ваши функции обратного вызова не должны выделять никакую память (например они не могут создать кортеж или список).
+Функции обратного вызова должны быть относительно простыми. Если вам нужно создать список - сделайте это заранее и сохраните его в глобальной переменной (или создайте его внутри коллбэка и в нём же обязательно удалите).
+Если вам нужны долгие сложные расчёты - используйте коллбэк-функцию чтобы установить флаг (ссылку) на код, где будут реализованы требуемые расчёты.
 
-Technical details of interrupts
--------------------------------
+Технические детали прерываний
+-----------------------------
 
-Let's step through the details of what is happening with the switch
-callback.  When you register a function with ``sw.callback()``, the switch
-sets up an external interrupt trigger (falling edge) on the pin that the
-switch is connected to.  This means that the microcontroller will listen
-on the pin for any changes, and the following will occur:
+Давайте рассмотрим подробнее что происходит с переключателем обратного вызова.
+Когда вы передаёте функцию в ``sw.callback()`` - переключатель устанавливает внешний триггер (falling edge) прерывания на пин (pin), который соединён с кнопкой USR.
+Это означает, что микроконтроллер слушает этот пин и отлавливает любые изменения. Происходит следующее:
 
-1. When the switch is pressed a change occurs on the pin (the pin goes
-   from low to high), and the microcontroller registers this change.
-2. The microcontroller finishes executing the current machine instruction,
-   stops execution, and saves its current state (pushes the registers on
-   the stack).  This has the effect of pausing any code, for example your
-   running Python script.
-3. The microcontroller starts executing the special interrupt handler
-   associated with the switch's external trigger.  This interrupt handler
-   get the function that you registered with ``sw.callback()`` and executes
-   it.
-4. Your callback function is executed until it finishes, returning control
-   to the switch interrupt handler.
-5. The switch interrupt handler returns, and the microcontroller is
-   notified that the interrupt has been dealt with.
-6. The microcontroller restores the state that it saved in step 2.
-7. Execution continues of the code that was running at the beginning.  Apart
-   from the pause, this code does not notice that it was interrupted.
+1. При нажатии на кнопку происходит изменение на контакте (пине): замыкание; и микроконтроллер регистрирует это.
+2. Микроконтроллер завершает выполнение текущей машинной инструкции, останавливает выполнение и сохраняет текущее состояние (записывает регистры в стек).
+   Это прерывает выполнение любого скрипта на плате.
+3. Микроконтроллер начинает выполнять специальный обработчик прерывания, связанного с внешним триггером переключателя USR. Этот обработчик прерываний получает функцию, которую вы передали в ``sw.callback()``, и выполняет её.
+4. Функция обратного вызова выполняется пока не закончит; затем вернёт управление обработчику прерывания.
+5. Обработчик прерывания сообщает микроконтроллеру, что прерывание завершилось.
+6. Микроконтроллер восстанавливает состояние, сохранённое на шаге 2.
+7. Выполнение программы продолжается с того места, на котором остановилось. Пауза на выполнении кода никак не скажется.
 
-The above sequence of events gets a bit more complicated when multiple
-interrupts occur at the same time.  In that case, the interrupt with the
-highest priority goes first, then the others in order of their priority.
-The switch interrupt is set at the lowest priority.
+Данная последовательность несколько усложняется когда одновременно происходит несколько прерываний. В этом случае прерывание с наибольшим приоритетом выполняется раньше и так далее по приоритету в порядке очереди.
+Приоритет прерывания переключателя USR является самым низким.
