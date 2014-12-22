@@ -1,60 +1,46 @@
-Safe mode and factory reset
-===========================
+Безопасный режим и возврат к заводским настройкам
+=================================================
 
-If something goes wrong with your pyboard, don't panic!  It is almost
-impossible for you to break the pyboard by programming the wrong thing.
+Если что-то пошло не так с вашим pyboard - не паникуйте! Сломать pyboard с помощью программирования практически невозможно.
 
-The first thing to try is to enter safe mode: this temporarily skips
-execution of ``boot.py`` and ``main.py`` and gives default USB settings.
+В первую очередь попробуйте войти в безопасный режим: при этом временно пропускается выполнение ``boot.py`` и ``main.py``, используя базовые настройки USB.
 
-If you have problems with the filesystem you can do a factory reset,
-which restores the filesystem to its original state.
+Если у вас возникли проблемы с файловой системой - вы можете сделать возврат к заводским настройкам, который восстановит файловую системы в исходное состояние.
 
-Safe mode
----------
+Безопасный режим
+----------------
 
-To enter safe mode, do the following steps:
+Чтобы войти в безопасный режим, выполните следующее:
 
-1. Connect the pyboard to USB so it powers up.
-2. Hold down the USR switch.
-3. While still holding down USR, press and release the RST switch.
-4. The LEDs will then cycle green to orange to green+orange and back again.
-5. Keep holding down USR until *only the orange LED is lit*, and then let
-   go of the USR switch.
-6. The orange LED should flash quickly 4 times, and then turn off.  
-7. You are now in safe mode.
+1. Подключите pyboard по USB.
+2. Нажмите и удерживайте кнопку USR.
+3. Удерживая USR, нажмите и отпустите RST.
+4. Светодиоды начнут поочереди переключаться между режимами: зелёный, оранжевый, зелёный+оранжевый.
+5. В тот момент когда будет гореть *только оранжевый светодиод* - отпустите USR.
+6. Оранжевый светодиод должен быстро помигать 4 раза и выключиться.
+7. Теперь вы в безопасном режиме.
 
-In safe mode, the ``boot.py`` and ``main.py`` files are not executed, and so
-the pyboard boots up with default settings.  This means you now have access
-to the filesystem (the USB drive should appear), and you can edit ``boot.py``
-and ``main.py`` to fix any problems.
+В безопасном режиме файлы ``boot.py`` и ``main.py`` не выполняются и, значит, pyboard загружается с настройками по умолчанию. Это означает, что вы теперь имеете доступ к файловой системе (USB диск должен появиться) и можете редактировать ``boot.py`` и ``main.py`` чтобы устранить любые неполадки.
 
-Entering safe mode is temporary, and does not make any changes to the
-files on the pyboard.
+Вход в безопасный режим является временным и не влечёт никаких изменений в файлах на pyboard.
 
-Factory reset the filesystem
-----------------------------
+Возврат файловой системы к заводским настройкам
+-----------------------------------------------
 
-If you pyboard's filesystem gets corrupted (for example, you forgot to
-eject/unmount it), or you have some code in ``boot.py`` or ``main.py`` which
-you can't escape from, then you can reset the filesystem.
+Если ваша файловая система будет повреждена (к примеру вы забудите извречь/размонтировать микроконтроллер) или у вас есть код в ``boot.py`` или ``main.py``, который вы не можете отключить - вы всегда можете сбросить файловую систему.
 
-Resetting the filesystem deletes all files on the internal pyboard storage
-(not the SD card), and restores the files ``boot.py``, ``main.py``, ``README.txt``
-and ``pybcdc.inf`` back to their original state.
+Сброс файловой системы удаляет все файлы во внутренней памяти pyboard (не SD карты), а также восстанавливает файлы ``boot.py``, ``main.py``, ``README.txt`` и ``pybcdc.inf`` обратно к их базовому состоянию.
 
-To do a factory reset of the filesystem you follow a similar procedure as
-you did to enter safe mode, but release USR on green+orange:
+Чтобы сделать возврат к заводским настройкам, вы должны повторить процедуру входа в безопасный режим, но отпустить кнопку USR в тот момент когда будут гореть зелёный+оранжевый:
 
-1. Connect the pyboard to USB so it powers up.
-2. Hold down the USR switch.
-3. While still holding down USR, press and release the RST switch.
-4. The LEDs will then cycle green to orange to green+orange and back again.
-5. Keep holding down USR until *both the green and orange LEDs are lit*, and
-   then let go of the USR switch.
-6. The green and orange LEDs should flash quickly 4 times.
-7. The red LED will turn on (so red, green and orange are now on).
-8. The pyboard is now resetting the filesystem (this takes a few seconds).
-9. The LEDs all turn off.
-10. You now have a reset filesystem, and are in safe mode.
-11. Press and release the RST switch to boot normally.
+1. Подключите pyboard по USB.
+2. Нажмите и удерживайте кнопку USR.
+3. Удерживая USR, нажмите и отпустите RST.
+4. Светодиоды начнут поочереди переключаться между режимами: зелёный, оранжевый, зелёный+оранжевый.
+5. В тот момент когда будут гореть *оба светодиода (зелёный и оранжевый)* - отпустите USR.
+6. Зелёный и оранжевый светодиоды должны быстро помигать 4 раза.
+7. Красный светодиод включится (теперь горят 3 светодиода: красный, зелёный и оранжевый).
+8. Сейчас pyboard сбрасывает файловую систему (это займёт несколько секунд).
+9. Все светодиоды выключатся.
+10. Теперь ваша файловая система в её первозданном виде.
+11. Нажмите и отпустите RST для запуска.
