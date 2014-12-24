@@ -1,112 +1,92 @@
-The Timers
-==========
+Таймеры
+=======
 
-The pyboard has 14 timers which each consist of an independent counter
-running at a user-defined frequency.  They can be set up to run a function
-at specific intervals.
-The 14 timers are numbered 1 through 14, but 3 is reserved
-for internal use, and 5 and 6 are used for servo and ADC/DAC control.
-Avoid using these timers if possible.
+У pyboard есть 14 таймеров, каждый из которых является независимым счётчиком, работающим на определённой пользователем частоте. Их можно использовать  для запуска функций через определённые промежутки времени.
+Все 14 таймеров пронумерованы от 1 до 14, но 3-й зарезервирован внутренних нужд, также как 5-й и 6-й используются для сервоприводов и ADC/DAC контроллеров.
+Старайтесь не использовать эти зарезервированные таймеры.
 
-Let's create a timer object::
+Давайте создадим таймер::
 
     >>> tim = pyb.Timer(4)
 
-Now let's see what we just created::
+Теперь давайте посмотрим что мы только что создали::
 
     >>> tim
     Timer(4)
 
-The pyboard is telling us that ``tim`` is attached to timer number 4, but
-it's not yet initialised.  So let's initialise it to trigger at 10 Hz
-(that's 10 times per second)::
+Pyboard говорит нам, что ``tim`` прикреплён к таймеру номер 4, но он ещё не инициализирован.
+Итак, давайте инициализируем его с частотой 10 Гц (это 10 раз в секунду)::
 
     >>> tim.init(freq=10)
 
-Now that it's initialised, we can see some information about the timer::
+Теперь таймер инициализирован и мы можем информацию о нём::
 
     >>> tim
     Timer(4, prescaler=255, period=32811, mode=0, div=0)
 
-The information means that this timer is set to run at the peripheral
-clock speed divided by 255, and it will count up to 32811, at which point
-it triggers an interrupt, and then starts counting again from 0.  These
-numbers are set to make the timer trigger at 10 Hz.
+Из этого следует, что этот таймер настроен на цикличную работу с тактовой частотой в 255 и он будет считать до 32811, после чего он вызывает прерывание, и начинает отчёт снова с 0.
+Этот набор чисел задаёт частоту вызова прерывания в 10 Гц.
 
-Timer counter
--------------
+Счётчик таймера
+---------------
 
-So what can we do with our timer?  The most basic thing is to get the
-current value of its counter::
+Так что мы можем сделать с нашим таймером? Самое простое, что можно получить - текущее значение счётчика::
 
     >>> tim.counter()
     21504
 
-This counter will continuously change, and counts up.
+Этот счётчик будет непрерывно меняться и подсчитывать.
 
-Timer callbacks
----------------
+Таймер с функцией обратного вызова
+----------------------------------
 
-The next thing we can do is register a callback function for the timer to
-execute when it triggers (see the [switch tutorial](tut-switch) for an
-introduction to callback functions)::
+Следующее что мы можем сделать - это создать функцию обратного вызова для таймера чтобы выполнить её при срабатывании (смотри [switch tutorial](tut-switch) введение в функции обратного вызова)::
 
     >>> tim.callback(lambda t:pyb.LED(1).toggle())
 
-This should start the red LED flashing right away.  It will be flashing
-at 5 Hz (2 toggle's are needed for 1 flash, so toggling at 10 Hz makes
-it flash at 5 Hz).  You can change the frequency by re-initialising the
-timer::
+Красный светодиод немедленно начнёт мигать с частотой 5 Гц (два переключения необходимы для одного такта "горения" светодиода, так что переключение с частотой 10 Гц означает, что гореть светодиод будет с частотой 5 Гц).
+Мы можем изменить частоту, повторно инициализировав таймер::
 
     >>> tim.init(freq=20)
 
-You can disable the callback by passing it the value ``None``::
+Мы можем отключить функцию обратного вызова, передав ей ``None``::
 
     >>> tim.callback(None)
 
-The function that you pass to callback must take 1 argument, which is
-the timer object that triggered.  This allows you to control the timer
-from within the callback function.
+Функция, которую мы передаём в коллбэк-функцию должна принемать 1 аргумент - таймер. Это позволяет нам управлять таймером внутри функции обратного вызова.
 
-We can create 2 timers and run them independently::
+Мы можем создать 2 таймера и запустить их независимо друг от друга::
 
     >>> tim4 = pyb.Timer(4, freq=10)
     >>> tim7 = pyb.Timer(7, freq=20)
     >>> tim4.callback(lambda t: pyb.LED(1).toggle())
     >>> tim7.callback(lambda t: pyb.LED(2).toggle())
 
-Because the callbacks are proper hardware interrupts, we can continue
-to use the pyboard for other things while these timers are running.
+Так как коллбэк-функции это настоящие аппаратные прерывания - мы можем продолжать использовать pyboard на своё усмотрение при работающих таймерах.
 
-Making a microsecond counter
-----------------------------
+Создание счётчика микросекунд
+-----------------------------
 
-You can use a timer to create a microsecond counter, which might be
-useful when you are doing something which requires accurate timing.
-We will use timer 2 for this, since timer 2 has a 32-bit counter (so
-does timer 5, but if you use timer 5 then you can't use the Servo
-driver at the same time).
+Мы можем использовать таймер для создания микросекуного счётчика - это может быть полезно когда вы делаете что-то, что требует точной синхронизации.
+Для этого мы будем использовать 2 таймера: таймер №2 имеет 32-х разрядный счётчик (так же как и таймер №5, но если мы используем его - не сможем использовать сервомотор).
 
-We set up timer 2 as follows::
+Мы создадим таймер №2 следующим образом::
 
     >>> micros = pyb.Timer(2, prescaler=83, period=0x3fffffff)
 
-The prescaler is set at 83, which makes this timer count at 1 MHz.
-This is because the CPU clock, running at 168 MHz, is divided by
-2 and then by prescaler+1, giving a freqency of 168 MHz/2/(83+1)=1 MHz
-for timer 2.  The period is set to a large number so that the timer
-can count up to a large number before wrapping back around to zero.
-In this case it will take about 17 minutes before it cycles back to
-zero.
+Заданная тактовая частота равна (prescaler) 83, это делает из таймера счётчик с частотой 1 МГц.
+Это происходит потому что тактовая частота процессора, работающего на частоте 168 МГц, делится на 2 и тогда к заданной частоте прибавляется единица (prescaler+1); всё это даём нам частоту таймера №2: 168МГц/2/(83 + 1) = 1МГц.
+Период равен огромному числу, так что таймер не скоро вернётся к нулевому значению. В данном случае таймер вернётся к нулю примерно через 17 минут.
 
-To use this timer, it's best to first reset it to 0::
+Перед тем как использовать этот таймер, его лучше всего сбросить в ноль::
 
     >>> micros.counter(0)
 
-and then perform your timing::
+и затем выполнить свой код::
 
     >>> start_micros = micros.counter()
 
-    ... do some stuff ...
+    ... код ...
 
     >>> end_micros = micros.counter()
+
