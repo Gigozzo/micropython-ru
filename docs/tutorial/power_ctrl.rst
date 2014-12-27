@@ -1,13 +1,12 @@
-Power control
-=============
+Управление питанием
+===================
 
-:meth:`pyb.wfi` is used to reduce power consumption while waiting for an
-event such as an interrupt.  You would use it in the following situation::
+:meth:`pyb.wfi` используется для снижения энергопотребления при ожидании таких событий как прерывание. Мы можем использовать его в следующих ситуациях::
 
     while True:
         do_some_processing()
         pyb.wfi()
 
-Control the frequency using :meth:`pyb.freq`::
+Управление частотой с помощью :meth:`pyb.freq`::
 
     pyb.freq(30000000) # set CPU frequency to 30MHz
