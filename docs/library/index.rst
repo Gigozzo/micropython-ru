@@ -1,12 +1,12 @@
-Micro Python libraries
-======================
+Библиотеки Micro Python
+=======================
 
-Python standard libraries
--------------------------
+Стандартные библиотеки Python
+-----------------------------
 
-The following standard Python libraries are built in to Micro Python.
+Следующие стандартные библиотеки Python встроены в Micro Python.
 
-For additional libraries, please download them from the `micropython-lib repository
+Для установки дополнительных библиотек, пожалуйста загрузите их из `micropython-lib repository
 <https://github.com/micropython/micropython-lib>`_.
 
 .. toctree::
@@ -21,19 +21,15 @@ For additional libraries, please download them from the `micropython-lib reposit
    sys.rst
    time.rst
 
-Python micro-libraries
-----------------------
+Микро-библиотеки Python
+-----------------------
 
-The following standard Python libraries have been "micro-ified" to fit in with
-the philosophy of Micro Python.  They provide the core functionality of that
-module and are intended to be a drop-in replacement for the standard Python
-library.
+Следующие стандартные библиотеки Python были немного модифицированы для соответствия философии Micro Python. Они сохранили базовую функциональность.
 
-The modules are available by their u-name, and also by their non-u-name.  The
-non-u-name can be overridden by a file of that name in your package path.
-For example, ``import json`` will first search for a file ``json.py`` or
-directory ``json`` and load that package if it is found.  If nothing is found,
-it will fallback to loading the built-in ``ujson`` module.
+Такие библиотеки имеют в имени приставку u и само название без приставки.
+Название может быть изменено с помощью файла, имя которого в вашем пути к пакету.
+Например, ``import.json`` будет в первую очередь искать файл ``json.py`` или папку ``json`` и загрузит этот пакет, если найдёт.
+Однако, если ничего не наёдёт - будет загружен встроенный модуль ``ujson``.
 
 .. toctree::
    :maxdepth: 1
@@ -42,10 +38,10 @@ it will fallback to loading the built-in ``ujson`` module.
    uheapq.rst
    ujson.rst
 
-Libraries specific to the pyboard
----------------------------------
+Специальные библиотеки для pyboard
+----------------------------------
 
-The following libraries are specific to the pyboard.
+Следующие библиотеки являются специфическими для pyboard:
 
 .. toctree::
    :maxdepth: 2
