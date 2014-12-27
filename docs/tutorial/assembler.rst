@@ -1,37 +1,30 @@
-Inline assembler
-================
+Ассемблерная вставка
+====================
 
-Here you will learn how to write inline assembler in Micro Python.
+Здесь вы узнаете как сделать ассемблерную вставку в код Micro Python.
 
-**Note**: this is an advanced tutorial, intended for those who already
-know a bit about microcontrollers and assembly language.
+**Примечание**: эта часть учебника для опытных программистов, для тех, кто уже немного знаком с микроконтроллерами и ассемблером.
 
-Micro Python includes an inline assembler.  It allows you to write
-assembly routines as a Python function, and you can call them as you would
-a normal Python function.
+С помощью ассемблерных вставок вы можете писать процедуры ассемблера и вызывать их как обычные функции в Python.
 
-Returning a value
------------------
+Возвращение значения
+--------------------
 
-Inline assembler functions are denoted by a special function decorator.
-Let's start with the simplest example::
+Ассемблерные вставки обозначаются специальным символом. Начнём с простого примера::
 
     @micropython.asm_thumb
     def fun():
         movw(r0, 42)
 
-You can enter this in a script or at the REPL.  This function takes no
-arguments and returns the number 42.  ``r0`` is a register, and the value
-in this register when the function returns is the value that is returned.
-Micro Python always interprets the ``r0`` as an integer, and converts it to an
-integer object for the caller.
+Вы можете написать этот скрипт в REPL. Эта функция не принемает никаких аргументов и возвращает число 42. ``r0`` - это регистр, значение этого регистра вернётся вместе с 42.
+Micro Python всегда распознаёт ``r0`` как integer и конвертирует его в объект для получателя.
 
-If you run ``print(fun())`` you will see it print out 42.
+Если мы запустим ``print(fun())`` - то увидим как на экране появится 42.
 
-Accessing peripherals
----------------------
+Доступ к периферийным устройствам
+---------------------------------
 
-For something a bit more complicated, let's turn on an LED::
+Для того, чтобы немного усложнить задачу, давайте включим светодиод::
 
     @micropython.asm_thumb
     def led_on():
@@ -39,50 +32,40 @@ For something a bit more complicated, let's turn on an LED::
         movw(r1, 1 << 13)
         strh(r1, [r0, stm.GPIO_BSRRL])
 
-This code uses a few new concepts:
+Здесь есть несколько новых элементов:
 
-  - ``stm`` is a module which provides a set of constants for easy
-    access to the registers of the pyboard's microcontroller.  Try
-    running ``import stm`` and then ``help(stm)`` at the REPL.  It will
-    give you a list of all the available constants.
+  - ``stm`` - это модуль, который предоставляет множество констант для простого доступа к регистрам микроконтроллера.
+    Попытайтесь импортировать stm (``import stm``) и затем вызовите ``help(stm)`` в REPL. Должен появиться список всевозможных конастант.
 
-  - ``stm.GPIOA`` is the address in memory of the GPIOA peripheral.
-    On the pyboard, the red LED is on port A, pin PA13.
+  - ``stm.GPIOA`` - это адресс в памяти периферийного устройства GPIOA. На pyboard красный светодиод на порт A, пин PA13.
 
-  - ``movwt`` moves a 32-bit number into a register.  It is a convenience
-    function that turns into 2 thumb instructions: ``movw`` followed by ``movt``.
-    The ``movt`` also shifts the immediate value right by 16 bits.
+  - ``movwt`` перемещает 32-разрядное число в регистр. Это удобная функция, которая превращается в две отличные инструкции: ``movw`` следует за ``movt``.
+    Также, ``movt`` немедленно сдвигает значение вправо на 16 бит.
 
-  - ``strh`` stores a half-word (16 bits).  The instruction above stores
-    the lower 16-bits of ``r1`` into the memory location ``r0 + stm.GPIO_BSRRL``.
-    This has the effect of setting high all those pins on port A for which
-    the corresponding bit in ``r0`` is set.  In our example above, the 13th
-    bit in ``r0`` is set, so PA13 is pulled high.  This turns on the red LED.
+  - ``strh`` хранит полу-слова (16 бит). Инструкция выше сохраняет нижние 16 бит из ``r1`` в ячейку памяти ``r0 + stm.GPIO_BSRRL``.
+    This has the effect of setting high all those pins on port A for which the corresponding bit in ``r0`` is set. In our example above, the 13th bit in ``r0`` is set, so PA13 is pulled high.
+    Это включает красный светодиод.
 
-Accepting arguments
--------------------
+Получение аргументов
+--------------------
 
-Inline assembler functions can accept up to 3 arguments.  If they are
-used, they must be named ``r0``, ``r1`` and ``r2`` to reflect the registers
-and the calling conventions.
+Встроенные ассемблерные функции могут принемать до 3-х аргументов. Если они используются, то должны быть названы ``r0``, ``r1`` и ``r2`` для отображения регистров и вызова соглашения(???).
 
-Here is a function that adds its arguments::
+Ниже функция, которая добавляет эти аргументы::
 
     @micropython.asm_thumb
     def asm_add(r0, r1):
         add(r0, r0, r1)
 
-This performs the computation ``r0 = r0 + r1``.  Since the result is put
-in ``r0``, that is what is returned.  Try ``asm_add(1, 2)``, it should return
-3.
+Эта функция выполняет вычисление ``r0 = r0 + r1``. Результат помещается в ``r0`` и возвращается.
+Попробуйте ``asm_add(1,2)`` - это должно вернуть 3ю
 
-Loops
+Циклы
 -----
 
-We can assign labels with ``label(my_label)``, and branch to them using
-``b(my_label)``, or a conditional branch like ``bgt(my_label)``.
+Мы можем назначать метки ``label(my_label)`` и ветвить их, используя, ``b(my_label)`` или условно ветвить как ``bgt(my_label)``.
 
-The following example flashes the green LED.  It flashes it ``r0`` times. ::
+В следующем примере мигает залёный светодиод. Он мигает ``r0`` раз. ::
 
     @micropython.asm_thumb
     def flash_led(r0):
