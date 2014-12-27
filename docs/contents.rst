@@ -1,5 +1,5 @@
-Micro Python documentation contents
-===================================
+Содержание документации Micro Python
+====================================
 
 .. toctree::
 
